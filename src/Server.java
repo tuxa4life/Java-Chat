@@ -24,11 +24,17 @@ public class Server {
     }
 
     public static void broadcast(String msg, ClientHandler sender) {
-        messages.add(new Message(sender.getUsername(), msg));
+        // Create and store the message
+        Message message = new Message(sender.getUsername(), msg);
+        messages.add(message);
 
+        // Format the message from the LinkedList
+        String formattedMsg = message.getTime() + " | " + message.getAuthor() + ": " + message.getMessage();
+
+        // Broadcast to ALL clients including the sender
         synchronized (clients) {
             for (ClientHandler c : clients) {
-                if (c != sender) c.sendMessage(msg);
+                c.sendMessage(formattedMsg);
             }
         }
     }
@@ -37,11 +43,7 @@ public class Server {
         clients.remove(client);
     }
 
-    public static List<Message> getMessages () {
+    public static List<Message> getMessages() {
         return messages;
-    }
-
-    public static void sendMessage (Message message) {
-        messages.add(message);
     }
 }

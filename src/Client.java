@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.List;
 
 public class Client {
     public static void main(String[] args) {
@@ -9,12 +8,12 @@ public class Client {
             DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-            new Thread(() -> { // Input thread
+            // Thread to receive messages from server
+            new Thread(() -> {
                 try {
                     while (true) {
                         String msg = in.readUTF();
-                        System.out.println("\n" + msg);
-                        System.out.print("> ");
+                        System.out.println(msg);
                     }
                 } catch (IOException e) {
                     System.out.println("Disconnected from server.");
@@ -26,7 +25,6 @@ public class Client {
             out.writeUTF(username);
             out.flush();
 
-            System.out.print("> ");
             String text;
             while ((text = reader.readLine()) != null) {
                 if (text.equals("quit()")) break;
@@ -40,9 +38,5 @@ public class Client {
         } catch (IOException e) {
             System.out.println("Error: " + e.getMessage());
         }
-    }
-
-    private static List<Message> getMessages() {
-        return Server.getMessages();
     }
 }

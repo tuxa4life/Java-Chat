@@ -18,8 +18,9 @@ public class ClientHandler implements Runnable {
     public void run() {
         try {
             username = in.readUTF();
-            out.writeUTF("Welcome to the chat!");
+            out.writeUTF("Welcome to the chat, " + username + "!");
 
+            // Send all previous messages from the LinkedList
             synchronized (Server.getMessages()) {
                 for (Message m : Server.getMessages()) {
                     out.writeUTF(m.getTime() + " | " + m.getAuthor() + ": " + m.getMessage());
@@ -29,7 +30,9 @@ public class ClientHandler implements Runnable {
             while (true) {
                 String msg = in.readUTF();
                 if (msg.equalsIgnoreCase("quit()")) break;
-                System.out.println(getUsername() + ": " + msg);
+
+                // Don't print or format here - just pass to server
+                // The server will handle storing and broadcasting
                 Server.broadcast(msg, this);
             }
         } catch (IOException e) {
